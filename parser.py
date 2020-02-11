@@ -1,5 +1,3 @@
-import re
-
 import pandas as pd
 import requests
 from bs4 import BeautifulSoup
@@ -20,8 +18,8 @@ def find_all_cars():
 
 def get_from_meta():
     cars = find_all_cars()
-    dd = {}
     for car in cars:
+        dd = {}
         result = list(car.find('span'))
         for meta in result:
             if 'span' in str(meta):
@@ -40,10 +38,12 @@ def get_from_meta():
             else:
                 if meta.get('itemprop') != 'image':
                     dd.update({meta.get('itemprop'): meta.get('content')})
-        for i in dd:
-            print(i, '------------', dd[i])
-        print(len(dd))
-        break
+        kmAge = car.find('div', {'class': "ListingItem-module__kmAge"}).text
+        kmAge = 0 if 'Новый' in kmAge else kmAge.replace('км', '')
+        dd.update({'km_age': kmAge})
+        # for i in dd:
+        #     print(i, '------------', dd[i])
+        # print('==================> ', len(dd))
 
 
 def add_to_frame(dictionary: dict):
