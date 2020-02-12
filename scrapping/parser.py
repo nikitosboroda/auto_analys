@@ -7,14 +7,15 @@ from bs4 import BeautifulSoup
 from utils import pandas_settings as ps
 
 
-# TODO: rewrite possibilities to  make dataset with few cars marks
+# TODO: implement functionality to get info about cars (with amount size) not only with page
 class ParserAuto:
     LISTING_ITEMS = "ListingItem-module__container " \
                     "ListingCars-module__listingItem"
 
-    def __init__(self, city, mark):
+    def __init__(self, city, mark: tuple, amount):
         self.city = city
         self.mark = mark
+        self.amount = amount
         # self.context = self.page.text
         # self.df = pd.DataFrame()
 
@@ -62,17 +63,17 @@ class ParserAuto:
 
     def _url_get_context(self, number):
         for i in range(1, number + 1):
-            self.df = pd.DataFrame()
-            page = requests.get(self._change_page(i))
-            page.encoding = "utf-8"
-            self._get_from_meta(page.text)
-            ps.write_to_file(self.df)
-            time.sleep(10)
-            print('awake up')
+            for car in self.mark:
+                self.df = pd.DataFrame()
+                page = requests.get(self._change_page(i, car))
+                page.encoding = "utf-8"
+                self._get_from_meta(page.text)
+                ps.write_to_file(self.df)
+                time.sleep(10)
 
-    def _change_page(self, page_val):
+    def _change_page(self, page_val, car):
         address = (
-            f"https://auto.ru/{self.city}/cars/{self.mark}/"
+            f"https://auto.ru/{self.city}/cars/{car}/"
             f"all/?sort=fresh_relevance_1-desc&output_type=list&page={page_val}"
         )
         return address
@@ -83,5 +84,5 @@ class ParserAuto:
 
 
 if __name__ == "__main__":
-    auto = ParserAuto("sankt-peterburg", "bmw")
+    auto = ParserAuto("sankt-peterburg", ("bmw",))
     # print(auto.return_data())
