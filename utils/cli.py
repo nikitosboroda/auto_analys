@@ -1,11 +1,14 @@
 import click
 
+from scrapping.parser import ParserAuto
+
 
 @click.command()
-@click.option()
-def main():
-    ...
+@click.argument("city")
+@click.option("--car", "-c", multiple=True)
+def create_dataset(city, car):
+    print("hello world")
 
 
 if __name__ == '__main__':
-    main()
+    create_dataset()
