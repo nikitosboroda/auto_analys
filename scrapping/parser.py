@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 from utils import pandas_settings as ps
 
 
+# TODO: rewrite possibilities to  make dataset with few cars marks
 class ParserAuto:
     LISTING_ITEMS = "ListingItem-module__container " \
                     "ListingCars-module__listingItem"
