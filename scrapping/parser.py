@@ -1,13 +1,16 @@
 import time
 
 import pandas as pd
+import numpy as np
 import requests
 from bs4 import BeautifulSoup
 
 from utils import file_worker as ps
 
 
+# TODO: add docstrings
 # TODO: implement functionality to get info about cars (with amount size) not only with page
+# TODO: change type of some cars parameters
 class ParserAuto:
     LISTING_ITEMS = "ListingItem-module__container " \
                     "ListingCars-module__listingItem"
@@ -56,9 +59,11 @@ class ParserAuto:
                         car_meta_info.update(
                             {meta.get("itemprop"): meta.get("content")}
                         )
+            car_meta_info.update({'metro': self._get_metro_stations(car)})
             km_age = car.find("div", {"class": "ListingItem-module__kmAge"}).text
-            km_age = 0 if "Новый" in km_age else km_age.replace("км", "")
-            car_meta_info.update({"km_age": km_age})
+            km_age = '0' if "Новый" in km_age else km_age.replace("км", "")
+            # print(km_age.split())
+            car_meta_info.update({"km_age": int(''.join(km_age.split()))})
             self.df = self.df.append(car_meta_info, ignore_index=True)
 
     def _url_get_context(self, number):
@@ -69,7 +74,7 @@ class ParserAuto:
                 page.encoding = "utf-8"
                 self._get_from_meta(page.text)
                 ps.write_to_file(self.df)
-                time.sleep(10)
+                time.sleep(10)  # just for not to be blocked by server
 
     def _change_page(self, page_val, car):
         address = (
@@ -78,11 +83,17 @@ class ParserAuto:
         )
         return address
 
+    @staticmethod
+    def _get_metro_stations(car):
+        main = car.find('div', {'class': "ListingItem-module__main"})
+        metros = [metro.text for metro in main.find_all('span', {'class': 'MetroList__stationFirstName'})] or np.nan
+        return metros
+
     def return_data(self, pages=10):
         self._url_get_context(pages)
         return self.df
 
 
 if __name__ == "__main__":
-    auto = ParserAuto("sankt-peterburg", ("bmw",))
-    # print(auto.return_data())
+    auto = ParserAuto("sankt-peterburg", ("bmw",), 37)
+    print(auto.return_data())
