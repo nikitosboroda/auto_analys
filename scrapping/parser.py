@@ -4,7 +4,7 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
-from utils import pandas_settings as ps
+from utils import file_worker as ps
 
 
 # TODO: implement functionality to get info about cars (with amount size) not only with page
