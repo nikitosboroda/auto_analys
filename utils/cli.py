@@ -5,10 +5,13 @@ from scrapping.parser import ParserAuto
 
 @click.command()
 @click.argument("city", default="moscow")
-@click.option("--car", "-c", multiple=True)
+@click.option("--cars", "-c",
+              help="tuple of cars: ('bmw', 'volvo',)"
+              # multiple=True
+)
 @click.option("--amount", "-a", default=370)
-def create_dataset(city, car, amount):
-    parser = ParserAuto(city, car, amount)
+def create_dataset(city, cars, amount):
+    parser = ParserAuto(city, cars, amount)
     parser.return_data()
 
 
