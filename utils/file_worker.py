@@ -9,7 +9,7 @@ def write_to_file(
     data: pd.DataFrame, ext="csv", filename="result"
 ):
     save_data = {"csv": data.to_csv, "parquet": data.to_parquet}
-    directory = Path(__file__).parents[1] / "datasets"
+    directory = Path(__file__).parents[1] / "datasets/all_datasets"
     if not os.path.exists(directory):
         os.makedirs(directory)
     if ext in save_data:
