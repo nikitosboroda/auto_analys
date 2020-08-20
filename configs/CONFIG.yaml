@@ -1,0 +1,12 @@
+available_cities:
+  moskva
+  sankt-peterburg
+  novosibirsk
+  samara
+  murmansk
+  vladivostok
+  perm
+
+win_geometry:
+  width: 550
+  height: 300
